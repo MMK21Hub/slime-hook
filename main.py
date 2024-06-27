@@ -2,17 +2,21 @@ from datetime import datetime
 import re
 import docker
 from docker.models.containers import Container
+import requests
 
 
 class Config:
     def __init__(
         self,
         container: str,
+        discord_webhook_url: str,
     ):
         """
         :param container: The ID or name of the Terraria server Docker container
+        :param discord_webhook_url: The full URL of the Discord webhook to send messages to
         """
         self.container = container
+        self.discord_webhook_url = discord_webhook_url
 
 
 def remove_ansii_escape_codes(string: str) -> str:
@@ -21,7 +25,22 @@ def remove_ansii_escape_codes(string: str) -> str:
     pass
 
 
-def handle_line(line: str):
+def send_discord_message(webhook_url: str, message: str):
+    """
+    Sends a message to a Discord channel using the provided webhook URL
+    :param webhook_url: The URL of the Discord webhook
+    :param message: The message to send, as a string with Markdown syntax for formatting
+    """
+    requests.post(
+        webhook_url,
+        json={
+            "content": message,
+        },
+    )
+
+
+def handle_line(config: Config, line: str):
+    line = line.strip()
     # FIXME: Regex doesn't handle IPv6 addresses (but I haven't spotted any  in the logs yet :/)
     connection_attempt = re.compile(r"^[\d\.]{7,15}:\d{1,5} is connecting\.\.\.")
     connection_booted = re.compile(
@@ -38,14 +57,21 @@ def handle_line(line: str):
     if chat_message.match(line):
         player = chat_message.match(line).group(1)
         message = chat_message.match(line).group(2)
-        print(f'"{player}" said "{message}"')
+        send_discord_message(config.discord_webhook_url, f"<**{player}**> {message}")
     elif player_joined.match(line):
         player = player_joined.match(line).group(1)
-        print(f'"{player}" joined the server')
+        send_discord_message(
+            config.discord_webhook_url, f":inbox_tray: **{player}** has joined"
+        )
     elif player_left.match(line):
         player = player_left.match(line).group(1)
-        print(f'"{player}" left the server')
-
+        send_discord_message(
+            config.discord_webhook_url, f":outbox_tray: **{player}** has left"
+        )
+    elif world_backup.match(line):
+        send_discord_message(
+            config.discord_webhook_url, "_Backup successfully created_"
+        )
     elif connection_attempt.match(line):
         pass
     elif connection_booted.match(line):
@@ -53,8 +79,6 @@ def handle_line(line: str):
     elif world_save_progress.match(line):
         pass
     elif world_validation_progress.match(line):
-        pass
-    elif world_backup.match(line):
         pass
     elif terraria_error.match(line):
         pass
@@ -74,12 +98,16 @@ def main(config: Config):
         if "\n" in line_buffer:
             lines = line_buffer.split("\n")
             for line in lines[:-1]:
-                handle_line(line)
+                handle_line(config, line)
             line_buffer = lines[-1]
 
 
 if __name__ == "__main__":
-    config = Config(container="terraria")
+    config = Config(
+        container="terraria",
+        # Test server webhook. Send me some messages if you really want to :)
+        discord_webhook_url="https://discord.com/api/webhooks/1255891706750963732/8XeM600_nsEqh0MnTLKC56Hw3yQsd4_1hDx67kyQh3w_e64ysW2vtAlMPxwz6WnBGGKq",
+    )
     try:
         main(config)
     except KeyboardInterrupt:
