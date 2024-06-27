@@ -37,7 +37,7 @@ class SlimeHook:
             },
         )
 
-    def handle_line(self, config: Config, line: str):
+    def handle_line(self, line: str):
         line = line.strip()
         # FIXME: Regex doesn't handle IPv6 addresses (but I haven't spotted any  in the logs yet :/)
         connection_attempt = re.compile(r"^[\d\.]{7,15}:\d{1,5} is connecting\.\.\.")
@@ -89,7 +89,7 @@ class SlimeHook:
             if "\n" in line_buffer:
                 lines = line_buffer.split("\n")
                 for line in lines[:-1]:
-                    self.handle_line(config, line)
+                    self.handle_line(line)
                 line_buffer = lines[-1]
 
 
