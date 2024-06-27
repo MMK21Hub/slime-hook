@@ -52,12 +52,6 @@ class LogLineType:
         return True
 
 
-def remove_ansii_escape_codes(string: str) -> str:
-    # TODO: Decide if this will be necessary or not
-    # Link: https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python?answertab=trending#tab-top
-    pass
-
-
 class SlimeHook:
     def __init__(self, config: Config) -> None:
         self.config = config
