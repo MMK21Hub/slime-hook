@@ -33,7 +33,10 @@ def main():
         slime_hook = SlimeHook(parsed_config)
 
     try:
-        slime_hook.run()
+        if parsed_config.auto_retry:
+            slime_hook.run_with_auto_retry()
+        else:
+            slime_hook.run()
     except KeyboardInterrupt:
         print("\nExiting...")
         exit(0)

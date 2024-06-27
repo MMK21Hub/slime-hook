@@ -1,7 +1,9 @@
 from datetime import datetime
 import re
+import time
 from typing import Callable
 import docker
+import docker.errors
 from docker.models.containers import Container
 import requests
 from pydantic import BaseModel
@@ -10,6 +12,7 @@ from pydantic import BaseModel
 class Config(BaseModel):
     container: str
     discord_webhook_url: str
+    auto_retry: bool = False
 
 
 class LogLineType:
@@ -144,3 +147,17 @@ class SlimeHook:
                 for line in lines[:-1]:
                     self.handle_line(line)
                 line_buffer = lines[-1]
+
+    def run_with_auto_retry(self):
+        has_shown_message = False
+        while True:
+            try:
+                self.run()
+            except docker.errors.NotFound:
+                if not has_shown_message:
+                    print(
+                        f'Docker container "{self.config.container}" not found, retrying in background...'
+                    )
+                    has_shown_message = True
+                time.sleep(5)
+                continue

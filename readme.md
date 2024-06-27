@@ -15,11 +15,26 @@ Slime Hook is configured using a YAML file provided as an argument to the CLI, e
 
 The available options are listed below to show the format the data should be in.
 
+#### Required fields
+
+Your config file should look similar to this to successfully run the script.
+
 ```yaml
 # The ID or name of the Terraria server Docker container
 container: terraria
 # The full URL of the Discord webhook to send messages to
 discord_webhook_url: https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz
+```
+
+#### Optional fields
+
+This shows optional fields with their default values.
+
+```yaml
+# When true, the CLI will keep trying to connect to the Docker container if it's not present
+# This means that the script can automatically start when the container is started
+# When false, the CLI will exit with an error if the container is not found (useful for testing)
+auto_retry: false
 ```
 
 ### Deployment guide
