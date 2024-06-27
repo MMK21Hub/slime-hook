@@ -37,10 +37,10 @@ class LogLineType:
     def match(self, line: str):
         return re.compile(self.regex).match(line)
 
-    def process_line(self, line: str):
+    def process_line(self, line: str) -> bool:
         match_result = self.match(line)
         if not match_result:
-            return
+            return False
         groups = match_result.groups()
         if len(groups) != self.capture_groups:
             raise ValueError(
@@ -49,6 +49,7 @@ class LogLineType:
 
         if self.callback:
             self.callback(*groups)
+        return True
 
 
 def remove_ansii_escape_codes(string: str) -> str:
