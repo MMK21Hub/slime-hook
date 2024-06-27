@@ -97,6 +97,21 @@ class SlimeHook:
                 ),
             ),
             LogLineType("terraria_error", r"^Error on message Terraria\.MessageBuffer"),
+            LogLineType(
+                "world_load_objects_progress",
+                r"^Resetting game objects (\d+)%",
+                capture_groups=1,
+            ),
+            LogLineType(
+                "world_load_data_progress",
+                r"^Loading world data: (\d+)%",
+                capture_groups=1,
+            ),
+            LogLineType(
+                "world_load_liquids_progress",
+                r"^Settling liquids (\d+)%",
+                capture_groups=1,
+            ),
         ]
 
     def send_discord_message(self, message: str):
