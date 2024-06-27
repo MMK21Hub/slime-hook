@@ -9,6 +9,26 @@ Named after the [Slime Hook](https://terraria.wiki.gg/wiki/Slime_hook) from Terr
 - This tool is intended to be used with a Terraria server running in a Docker container. I've tested it with the [ryshe/terraria](https://registry.hub.docker.com/r/ryshe/terraria/) image.
 - It sends messages when players join/leave using Discord webhooks. You'll have to create one in the settings for your prefered Discord channel.
 
+### Config file
+
+Slime Hook is configured using a YAML file provided as an argument to the CLI, e.g. `cli.py config.yaml`.
+
+The available options are listed below to show the format the data should be in.
+
+```yaml
+# The ID or name of the Terraria server Docker container
+container: terraria
+# The full URL of the Discord webhook to send messages to
+discord_webhook_url: https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz
+```
+
+### Deployment guide
+
+1. Clone this repository onto the server running the Terraria server
+2. Create a virtual environment for the project and install the dependencies from `requirements.txt`
+3. Copy the YAML code from above into a new file at `./config.yaml` within the repository folder
+4. Run the script: `python3 cli.py config.yaml`
+
 ## Development instructions
 
 Starting a test server:

@@ -4,20 +4,12 @@ from typing import Callable
 import docker
 from docker.models.containers import Container
 import requests
+from pydantic import BaseModel
 
 
-class Config:
-    def __init__(
-        self,
-        container: str,
-        discord_webhook_url: str,
-    ):
-        """
-        :param container: The ID or name of the Terraria server Docker container
-        :param discord_webhook_url: The full URL of the Discord webhook to send messages to
-        """
-        self.container = container
-        self.discord_webhook_url = discord_webhook_url
+class Config(BaseModel):
+    container: str
+    discord_webhook_url: str
 
 
 class LogLineType:
@@ -134,7 +126,7 @@ class SlimeHook:
 
     def run(self):
         client = docker.from_env()
-        container: Container = client.containers.get(config.container)
+        container: Container = client.containers.get(self.config.container)
         incoming_log_parts = container.logs(
             since=datetime.now(), follow=True, stream=True
         )
@@ -152,16 +144,3 @@ class SlimeHook:
                 for line in lines[:-1]:
                     self.handle_line(line)
                 line_buffer = lines[-1]
-
-
-if __name__ == "__main__":
-    config = Config(
-        container="terraria",
-        # Test server webhook. Send me some messages if you really want to :)
-        discord_webhook_url="https://discord.com/api/webhooks/1255891706750963732/8XeM600_nsEqh0MnTLKC56Hw3yQsd4_1hDx67kyQh3w_e64ysW2vtAlMPxwz6WnBGGKq",
-    )
-    try:
-        app = SlimeHook(config)
-        app.run()
-    except KeyboardInterrupt:
-        print("\nExiting...")
