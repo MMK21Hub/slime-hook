@@ -14,6 +14,7 @@ This tool was primarily made as a value-add for my personal Terraria server, but
 - If another tool (like Podman) provides a Docker-compatible API, it should work with that too.
 - Other docker images should also work, as long as they provide log output to stdout.
 - It sends messages when players join/leave using Discord webhooks. You'll have to create one in the settings of your prefered Discord channel.
+- This tool is written in Python, so Python 3.9 or later is required to run it.
 
 ### Config file
 

@@ -2,7 +2,7 @@ from calendar import c
 from datetime import datetime
 import re
 import time
-from typing import Callable
+from typing import Callable, Optional
 import docker
 import docker.errors
 from docker.models.containers import Container
@@ -15,14 +15,14 @@ class AutoRetryConfig(BaseModel):
 
 
 class AutoRetryConfigs(BaseModel):
-    container_not_found: AutoRetryConfig | None = None
-    container_not_running: AutoRetryConfig | None = None
+    container_not_found: Optional[AutoRetryConfig] = None
+    container_not_running: Optional[AutoRetryConfig] = None
 
 
 class Config(BaseModel):
     container: str
     discord_webhook_url: str
-    auto_retry: AutoRetryConfigs | None = None
+    auto_retry: Optional[AutoRetryConfigs] = None
 
 
 class LogLineType:
@@ -30,7 +30,7 @@ class LogLineType:
         self,
         name: str,
         regex: str,
-        callback: Callable[..., None] | None = None,
+        callback: Optional[Callable[..., None]] = None,
         capture_groups: int = 0,
     ):
         name = name
@@ -171,7 +171,7 @@ class SlimeHook:
         has_shown_message = False
 
         def retry_later(
-            error: Exception, retry_options: AutoRetryConfig | None, message: str
+            error: Exception, retry_options: Optional[AutoRetryConfig], message: str
         ):
             if not retry_options:
                 raise error
