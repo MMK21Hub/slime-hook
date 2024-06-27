@@ -121,11 +121,17 @@ class SlimeHook:
     def run(self):
         client = docker.from_env()
         container: Container = client.containers.get(config.container)
-        log_parts = container.logs(since=datetime.now(), follow=True, stream=True)
+        incoming_log_parts = container.logs(
+            since=datetime.now(), follow=True, stream=True
+        )
         print("Listening to log output from container...")
         line_buffer = ""
-        for log in log_parts:
-            line_buffer += log.decode("utf-8")
+        for log in incoming_log_parts:
+            try:
+                decoded_line = log.decode("utf-8")
+            except UnicodeDecodeError:
+                continue
+            line_buffer += decoded_line
             # Split the buffer into lines just in case the current part has multiple newlines
             if "\n" in line_buffer:
                 lines = line_buffer.split("\n")
