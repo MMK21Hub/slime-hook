@@ -31,10 +31,15 @@ discord_webhook_url: https://discord.com/api/webhooks/1234567890/abcdefghijklmno
 This shows optional fields with their default values.
 
 ```yaml
-# When true, the CLI will keep trying to connect to the Docker container if it's not present
-# This means that the script can automatically start when the container is started
-# When false, the CLI will exit with an error if the container is not found (useful for testing)
-auto_retry: false
+# When provided, Slime Hpok will be restarted if certain errors occur, such as the container being stopped or removed
+# This is useful when the script is automatically running in the background
+# The auto-retry feature will only be enabled for error types specified under `auto_retry`
+auto_retry:
+  container_not_found:
+    # The number of seconds to wait between attempts
+    interval_seconds: 120
+  container_not_running:
+    interval_seconds: 5
 ```
 
 ### Deployment guide
@@ -42,7 +47,8 @@ auto_retry: false
 1. Clone this repository onto the server running the Terraria server
 2. Create a virtual environment for the project and install the dependencies from `requirements.txt`
 3. Copy the YAML code from above into a new file at `./config.yaml` within the repository folder
-4. Run the script: `python3 cli.py config.yaml`
+4. Create a Discord webhook for the channel you want to send messages to, copy the URL, and enter it into the config file
+5. Run the script: `python3 cli.py config.yaml`
 
 ## Development instructions
 

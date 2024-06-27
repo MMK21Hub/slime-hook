@@ -1,3 +1,4 @@
+from calendar import c
 from datetime import datetime
 import re
 import time
@@ -9,10 +10,19 @@ import requests
 from pydantic import BaseModel
 
 
+class AutoRetryConfig(BaseModel):
+    interval_seconds: float
+
+
+class AutoRetryConfigs(BaseModel):
+    container_not_found: AutoRetryConfig | None = None
+    container_not_running: AutoRetryConfig | None = None
+
+
 class Config(BaseModel):
     container: str
     discord_webhook_url: str
-    auto_retry: bool = False
+    auto_retry: AutoRetryConfigs | None = None
 
 
 class LogLineType:
@@ -44,6 +54,10 @@ class LogLineType:
         if self.callback:
             self.callback(*groups)
         return True
+
+
+class ContainerNotRunning(RuntimeError):
+    pass
 
 
 class SlimeHook:
@@ -130,6 +144,8 @@ class SlimeHook:
     def run(self):
         client = docker.from_env()
         container: Container = client.containers.get(self.config.container)
+        if container.status != "running":
+            raise ContainerNotRunning(f'Container "{container.name}" is not running')
         incoming_log_parts = container.logs(
             since=datetime.now(), follow=True, stream=True
         )
@@ -149,15 +165,37 @@ class SlimeHook:
                 line_buffer = lines[-1]
 
     def run_with_auto_retry(self):
+        if not self.config.auto_retry:
+            raise ValueError("No auto_retry config provided")
+
         has_shown_message = False
+
+        def retry_later(
+            error: Exception, retry_options: AutoRetryConfig | None, message: str
+        ):
+            if not retry_options:
+                raise error
+            nonlocal has_shown_message
+            if not has_shown_message:
+                print(message)
+                has_shown_message = True
+            time.sleep(retry_options.interval_seconds)
+
         while True:
             try:
                 self.run()
-            except docker.errors.NotFound:
-                if not has_shown_message:
-                    print(
-                        f'Docker container "{self.config.container}" not found, retrying in background...'
-                    )
-                    has_shown_message = True
-                time.sleep(5)
+                break
+            except docker.errors.NotFound as error:
+                retry_later(
+                    error,
+                    self.config.auto_retry.container_not_found,
+                    f'Docker container "{self.config.container}" not found, retrying in background...',
+                )
+                continue
+            except ContainerNotRunning as error:
+                retry_later(
+                    error,
+                    self.config.auto_retry.container_not_running,
+                    f'Docker container "{self.config.container}" not running, retrying in background...',
+                )
                 continue
