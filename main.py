@@ -1,4 +1,3 @@
-from calendar import c
 from datetime import datetime
 import re
 import time
@@ -68,7 +67,7 @@ class ContainerNotRunning(RuntimeError):
 class SlimeHook:
     def __init__(self, config: Config) -> None:
         self.config = config
-        # FIXME: Regex doesn't handle IPv6 addresses (but I haven't spotted any  in the logs yet :/)
+        # FIXME: Regex doesn't handle IPv6 addresses (not that I've spotted any in the wild yet :/)
         self.LINE_TYPES = [
             LogLineType(
                 "connection_attempt", r"^[\d\.]{7,15}:\d{1,5} is connecting\.\.\."

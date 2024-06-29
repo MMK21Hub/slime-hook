@@ -2,19 +2,21 @@
 
 A Python tool for publishing Terraria server chat messages to a Discord channel.
 
-Named after the [Slime Hook](https://terraria.wiki.gg/wiki/Slime_hook) from Terraria (becuase it uses webhooks to send Discord messages). <!-- Haha I am indeed a comedic genius -->
+Named after the [Slime Hook](https://terraria.wiki.gg/wiki/Slime_hook) from Terraria (becuase it uses web*hooks* to send Discord messages). <!-- Haha I am indeed a comedic genius -->
 
 ## Documentation
 
-## Expected environment
+### Expected environment
 
-This tool was primarily made as a value-add for my personal Terraria server, but I've tried to make it easy to configure and run for whoever wants to use it. If you have any queries or issues, feel free to open an issue on this repository :)
+Although this tool was originally made as a value-add for my personal Terraria server, I've tried to make it easy to configure and run for whoever wants to use it. If you have any queries or issues, feel free to open an issue on this repository :)
 
 - Slime Hook is intended to be used with a Terraria server running in a Docker container. I've tested it with the [ryshe/terraria](https://registry.hub.docker.com/r/ryshe/terraria/) image.
 - If another tool (like Podman) provides a Docker-compatible API, it should work with that too.
 - Other docker images should also work, as long as they provide log output to stdout.
 - It sends messages when players join/leave using Discord webhooks. You'll have to create one in the settings of your prefered Discord channel.
 - This tool is written in Python, so Python 3.9 or later is required to run it.
+
+If you want to edit the messages sent, you have to modify the code. Look for the `LINE_TYPES` constant in the `SlimeHook` class. I'll make this configurable if there's demand for it.
 
 ### Config file
 
