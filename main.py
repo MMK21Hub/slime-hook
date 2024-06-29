@@ -126,6 +126,13 @@ class SlimeHook:
                 r"^Settling liquids (\d+)%",
                 capture_groups=1,
             ),
+            LogLineType(
+                "server_listening",
+                r"^Listening on port \d+",
+                callback=lambda: self.send_discord_message(
+                    ":zap: **Server has started!**"
+                ),
+            ),
         ]
 
     def send_discord_message(self, message: str):
@@ -175,6 +182,10 @@ class SlimeHook:
                 for line in lines[:-1]:
                     self.handle_line(line)
                 line_buffer = lines[-1]
+
+        # If we get here then it usually means the container has stopped
+        self.send_discord_message(":skull: **Server has stopped**")
+        raise ContainerNotRunning(f'Container "{container.name}" is not running')
 
     def run_with_auto_retry(self):
         if not self.config.auto_retry:
