@@ -19,10 +19,15 @@ class AutoRetryConfigs(BaseModel):
     container_not_running: Optional[AutoRetryConfig] = None
 
 
+class DockerConnection(BaseModel):
+    base_url: str
+
+
 class Config(BaseModel):
     container: str
     discord_webhook_url: str
     auto_retry: Optional[AutoRetryConfigs] = None
+    docker_connection: Optional[DockerConnection] = None
 
 
 class LogLineType:
@@ -141,8 +146,15 @@ class SlimeHook:
         if not handled:
             print(line.encode())
 
+    def get_docker_client(self):
+        conn_options = self.config.docker_connection
+        if not conn_options:
+            return docker.from_env()
+        return docker.DockerClient(base_url=conn_options.base_url)
+
     def run(self):
-        client = docker.from_env()
+        client = self.get_docker_client()
+
         container: Container = client.containers.get(self.config.container)
         if container.status != "running":
             raise ContainerNotRunning(f'Container "{container.name}" is not running')

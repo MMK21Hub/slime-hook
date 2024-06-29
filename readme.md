@@ -2,7 +2,7 @@
 
 A Python tool for publishing Terraria server chat messages to a Discord channel.
 
-Named after the [Slime Hook](https://terraria.wiki.gg/wiki/Slime_hook) from Terraria becuase it uses webhooks to send Discord messages. <!-- Haha I am indeed a comedic genius -->
+Named after the [Slime Hook](https://terraria.wiki.gg/wiki/Slime_hook) from Terraria (becuase it uses webhooks to send Discord messages). <!-- Haha I am indeed a comedic genius -->
 
 ## Documentation
 
@@ -38,7 +38,7 @@ discord_webhook_url: https://discord.com/api/webhooks/1234567890/abcdefghijklmno
 This shows optional fields with their default values.
 
 ```yaml
-# When provided, Slime Hpok will be restarted if certain errors occur, such as the container being stopped or removed
+# When provided, Slime Hook will be restarted if certain errors occur, such as the container being stopped or removed
 # This is useful when the script is automatically running in the background
 # The auto-retry feature will only be enabled for error types specified under `auto_retry`
 auto_retry:
@@ -47,6 +47,11 @@ auto_retry:
     interval_seconds: 120
   container_not_running:
     interval_seconds: 5
+# Specify how Slime Hook should connect to the Docker daemon
+# If not specified, configuration will come from environment variables
+# See upstream docs for details: https://docker-py.readthedocs.io/en/stable/client.html#docker.client.from_env
+docker_connection:
+  base_url: # e.g. tcp://127.0.0.1:2375 or unix://var/run/docker.sock
 ```
 
 ### Deployment guide
