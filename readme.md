@@ -10,7 +10,7 @@ Named after the [Slime Hook](https://terraria.wiki.gg/wiki/Slime_hook) from Terr
 
 Although this tool was originally made as a value-add for my personal Terraria server, I've tried to make it easy to configure and run for whoever wants to use it. If you have any queries or issues, feel free to open an issue on this repository :)
 
-- Slime Hook is intended to be used with a Terraria server running in a Docker container. I've tested it with the [ryshe/terraria](https://registry.hub.docker.com/r/ryshe/te   rraria/) image.
+- Slime Hook is intended to be used with a Terraria server running in a Docker container. I've tested it with the [ryshe/terraria](https://registry.hub.docker.com/r/ryshe/terraria/) image.
 - If another tool (like Podman) provides a Docker-compatible API, it should work with that too.
 - Other docker images should also work, as long as they provide log output to stdout.
 - It sends messages when players join/leave using Discord webhooks. You'll have to create one in the settings of your preferred Discord channel.
