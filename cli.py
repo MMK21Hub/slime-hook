@@ -3,7 +3,7 @@ from sys import argv, stderr
 from pydantic import ValidationError
 import yaml
 
-from main import Config, SlimeHook
+from slime_hook import Config, SlimeHook
 
 
 def main():
