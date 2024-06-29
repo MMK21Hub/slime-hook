@@ -13,10 +13,18 @@ Although this tool was originally made as a value-add for my personal Terraria s
 - Slime Hook is intended to be used with a Terraria server running in a Docker container. I've tested it with the [ryshe/terraria](https://registry.hub.docker.com/r/ryshe/terraria/) image.
 - If another tool (like Podman) provides a Docker-compatible API, it should work with that too.
 - Other docker images should also work, as long as they provide log output to stdout.
-- It sends messages when players join/leave using Discord webhooks. You'll have to create one in the settings of your prefered Discord channel.
+- It sends messages when players join/leave using Discord webhooks. You'll have to create one in the settings of your preferred Discord channel.
 - This tool is written in Python, so Python 3.9 or later is required to run it.
 
 If you want to edit the messages sent, you have to modify the code. Look for the `LINE_TYPES` constant in the `SlimeHook` class. I'll make this configurable if there's demand for it.
+
+### Deployment guide
+
+1. Clone this repository onto the server running the Terraria server
+2. Create a virtual environment for the project and install the dependencies from `requirements.txt`
+3. Copy the YAML code from [the section below](#required-fields) into a new file at `./config.yaml` within the repository folder
+4. Create a Discord webhook for the channel you want to send messages to, copy the URL, and enter it into the config file
+5. Run the script: `python3 cli.py config.yaml`
 
 ### Config file
 
@@ -55,14 +63,6 @@ auto_retry:
 docker_connection:
   base_url: # e.g. tcp://127.0.0.1:2375 or unix://var/run/docker.sock
 ```
-
-### Deployment guide
-
-1. Clone this repository onto the server running the Terraria server
-2. Create a virtual environment for the project and install the dependencies from `requirements.txt`
-3. Copy the YAML code from above into a new file at `./config.yaml` within the repository folder
-4. Create a Discord webhook for the channel you want to send messages to, copy the URL, and enter it into the config file
-5. Run the script: `python3 cli.py config.yaml`
 
 ## Development instructions
 
