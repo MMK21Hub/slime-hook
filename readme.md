@@ -45,7 +45,7 @@ discord_webhook_url: https://discord.com/api/webhooks/1234567890/abcdefghijklmno
 
 #### Optional fields
 
-This shows optional fields with their default values.
+This shows optional fields with some suggested values.
 
 ```yaml
 # When provided, Slime Hook will be restarted if certain errors occur, such as the container being stopped or removed
@@ -61,7 +61,7 @@ auto_retry:
 # If not specified, configuration will come from environment variables
 # See upstream docs for details: https://docker-py.readthedocs.io/en/stable/client.html#docker.client.from_env
 docker_connection:
-  base_url: # e.g. tcp://127.0.0.1:2375 or unix://var/run/docker.sock
+  base_url: unix://var/run/docker.sock # Or a URL like tcp://127.0.0.1:2375
 ```
 
 ## Development instructions
