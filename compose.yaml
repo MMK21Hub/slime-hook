@@ -1,0 +1,7 @@
+services:
+  slime-hook:
+    build:
+      context: .
+    volumes:
+      - ./config.yaml:/config.yaml
+      - /var/run/docker.sock:/var/run/docker.sock

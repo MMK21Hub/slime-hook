@@ -6,3 +6,5 @@ worlds/
 # Configuration files
 *.yml
 *.yaml
+!*compose.yml
+!compose.yaml
