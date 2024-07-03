@@ -144,13 +144,11 @@ class SlimeHook:
 
     def handle_line(self, line: str):
         line = line.strip()
-        handled = False
         for line_type in self.LINE_TYPES:
-            if line_type.process_line(line):
-                handled = True
-                break
-        if not handled:
-            print(line.encode())
+            did_process_line = line_type.process_line(line)
+            if did_process_line:
+                return line_type
+        print(line.encode())
 
     def get_docker_client(self):
         conn_options = self.config.docker_connection
@@ -179,7 +177,11 @@ class SlimeHook:
             if "\n" in line_buffer:
                 lines = line_buffer.split("\n")
                 for line in lines[:-1]:
-                    self.handle_line(line)
+                    try:
+                        self.handle_line(line)
+                    except Exception as exception:
+                        print(f"Failed to process line: {line}")
+                        print(exception)
                 line_buffer = lines[-1]
 
         # If we get here then it usually means the container has stopped
