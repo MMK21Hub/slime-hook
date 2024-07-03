@@ -100,8 +100,14 @@ class SlimeHook:
                 ),
                 capture_groups=2,
             ),
-            LogLineType("world_save_progress", r"^Saving world data: (\d+)%"),
-            LogLineType("world_validation_progress", r"^Validating world save: (\d+)%"),
+            LogLineType(
+                "world_save_progress", r"^Saving world data: (\d+)%", capture_groups=1
+            ),
+            LogLineType(
+                "world_validation_progress",
+                r"^Validating world save: (\d+)%",
+                capture_groups=1,
+            ),
             LogLineType(
                 "world_backup",
                 r"^Backing up world file",
