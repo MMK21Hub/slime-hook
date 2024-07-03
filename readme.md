@@ -20,11 +20,27 @@ If you want to edit the messages sent, you have to modify the code. Look for the
 
 ### Deployment guide
 
-1. Clone this repository onto the server running the Terraria server
-2. Create a virtual environment for the project and install the dependencies from `requirements.txt`
-3. Copy the YAML code from [the section below](#required-fields) into a new file at `./config.yaml` within the repository folder
-4. Create a Discord webhook for the channel you want to send messages to, copy the URL, and enter it into the config file
-5. Run the script: `python3 cli.py config.yaml`
+The easiest way to deploy Slime Hook is using `docker compose`. If you don't have access to Docker, then you can follow the [non-Docker deployment guide](#non-docker-deployment-guide).
+
+Start off by creating a folder for your compose file and Slime Hook config. Inside it, create a file named `config.yaml` with the following content:
+
+```yaml
+services:
+  slime-hook:
+    image: mmk21/slime-hook:latest
+    volumes:
+      - ./config.yaml:/config.yaml
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+```
+
+Then, configure the tool by the YAML code from [the section below](#required-fields) into a new file called `config.yaml` in out folder. Edit it so that the `container` field matches the name of the Docker container that runs your Terraria server, and set `discord_webhook_url` to the URL of the Discord webhook you created.
+
+Finally, create and start the containers with `docker compose`:
+
+```bash
+docker compose up -d
+```
 
 ### Config file
 
@@ -64,10 +80,35 @@ docker_connection:
   base_url: unix://var/run/docker.sock # Or a URL like tcp://127.0.0.1:2375
 ```
 
-## Development instructions
+## Non-Docker deployment guide
+
+1. Clone this repository onto the server running the Terraria server
+2. Create a virtual environment for the project and install the dependencies from `requirements.txt`
+3. Copy the YAML code from [the section above](#required-fields) into a new file at `./config.yaml` within the repository folder
+4. Create a Discord webhook for the channel you want to send messages to, copy the URL, and enter it into the config file
+5. Run the script: `python3 cli.py config.yaml`
+
+## Documentation for developing Slime Hook
 
 Starting a test server:
 
 ```bash
 docker run -it -p 7777:7777 --rm -v ./worlds:/root/.local/share/Terraria/Worlds --name terraria ryshe/terraria:vanilla-latest -world /root/.local/share/Terraria/Worlds/Test.wld -autocreate 1
+```
+
+### Publishing a new release
+
+The steps are something like this. We can probably make this a Bash script or even a GitHub action if we want to be fancy.
+
+```bash
+VERSION=v1.0.0 # Replace with the new version number
+
+git tag $VERSION
+git push origin $VERSION
+
+docker build -t mmk21/slime-hook:$VERSION .
+docker push mmk21/slime-hook:$VERSION
+
+docker tag mmk21/slime-hook:$VERSION mmk21/slime-hook:latest
+docker push mmk21/slime-hook:latest
 ```
