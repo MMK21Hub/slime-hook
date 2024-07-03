@@ -28,4 +28,4 @@ USER slimeuser
 COPY . .
 
 ENV SLIME_HOOK_CONFG=/config.yaml
-CMD python3 main.py $SLIME_HOOK_CONFG
+CMD python3 cli.py $SLIME_HOOK_CONFG
