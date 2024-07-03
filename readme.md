@@ -42,6 +42,8 @@ Finally, create and start the containers with `docker compose`:
 docker compose up -d
 ```
 
+Feel free to customize the compose file to suit your needs. I'd also recommend adding the `auto_retry` option to your `config.yaml` (see the [optional config fields](#optional-fields) section for details).
+
 ### Config file
 
 Slime Hook is configured using a YAML file provided as an argument to the CLI, e.g. `cli.py config.yaml`.
