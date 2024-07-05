@@ -102,13 +102,15 @@ docker run -it -p 7777:7777 --rm -v ./worlds:/root/.local/share/Terraria/Worlds 
 
 The steps are something like this. We can probably make this a Bash script or even a GitHub action if we want to be fancy.
 
+So that multiple architectures can be built, you must set Docker to use the containerd image store, as explained [in the Docker documentation](https://docs.docker.com/storage/containerd/). You also need to [install the `arm64` emulator for Docker](https://github.com/tonistiigi/binfmt?tab=readme-ov-file#installing-emulators) to build the ARM64 image in an x86 computer (or vice versa if you're using an ARM computer), so run `docker run --privileged --rm tonistiigi/binfmt --install arm64`. 
+
 ```bash
 VERSION=v1.0.0 # Replace with the new version number
 
 git tag $VERSION
 git push origin $VERSION
 
-docker build -t mmk21/slime-hook:$VERSION .
+docker build -t mmk21/slime-hook:$VERSION --platform linux/amd64,linux/arm64 .
 docker push mmk21/slime-hook:$VERSION
 
 docker tag mmk21/slime-hook:$VERSION mmk21/slime-hook:latest
