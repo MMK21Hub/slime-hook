@@ -106,6 +106,12 @@ docker_connection:
 4. Create a Discord webhook for the channel you want to send messages to, copy the URL, and enter it into the config file
 5. Run the script: `python3 cli.py config.yaml`
 
+## Demo video
+
+Click the image below to watch a brief video demo of Slime Hook (<https://youtube.com/watch?v=RB2MHu3Dz5s>).
+
+[![Slime Hook demo: Bridge your Terraria server with a Discord channel - YouTube)](assets/youtube-video-snapshot.png)](https://www.youtube.com/watch?v=RB2MHu3Dz5s)
+
 ## Documentation for developing Slime Hook
 
 Starting a test server:
