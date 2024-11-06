@@ -22,11 +22,24 @@ class DockerConnection(BaseModel):
     base_url: str
 
 
+class EnabledLogMessages(BaseModel):
+    connection_attempt: bool = False
+    connection_booted: bool = False
+    player_joined: bool = True
+    player_left: bool = True
+    chat_message: bool = True
+    world_backup: bool = True
+    terraria_error: bool = True
+    server_listening: bool = True
+    server_stopped: bool = True
+
+
 class Config(BaseModel):
     container: str
     discord_webhook_url: str
     auto_retry: Optional[AutoRetryConfigs] = None
     docker_connection: Optional[DockerConnection] = None
+    log_messages: EnabledLogMessages = EnabledLogMessages()
 
 
 class LogLineType:
@@ -34,6 +47,7 @@ class LogLineType:
         self,
         name: str,
         regex: str,
+        is_enabled: bool = False,
         callback: Optional[Callable[..., None]] = None,
         capture_groups: int = 0,
     ):
@@ -41,6 +55,7 @@ class LogLineType:
         self.regex = regex
         self.callback = callback
         self.capture_groups = capture_groups
+        self.is_enabled = is_enabled
 
     def match(self, line: str):
         return re.compile(self.regex).match(line)
@@ -55,7 +70,7 @@ class LogLineType:
                 f"Expected {self.capture_groups} capture groups, but got {len(groups)}"
             )
 
-        if self.callback:
+        if self.is_enabled and self.callback:
             self.callback(*groups)
         return True
 
@@ -70,15 +85,19 @@ class SlimeHook:
         # FIXME: Regex doesn't handle IPv6 addresses (not that I've spotted any in the wild yet :/)
         self.LINE_TYPES = [
             LogLineType(
-                "connection_attempt", r"^[\d\.]{7,15}:\d{1,5} is connecting\.\.\."
+                "connection_attempt",
+                r"^[\d\.]{7,15}:\d{1,5} is connecting\.\.\.",
+                is_enabled=self.config.log_messages.connection_attempt,
             ),
             LogLineType(
                 "connection_booted",
                 r"^[\d\.]{7,15}:\d{1,5} was booted: Invalid operation at this state\.",
+                is_enabled=self.config.log_messages.connection_booted,
             ),
             LogLineType(
                 "player_joined",
                 r"^(.*) has joined.$",
+                is_enabled=self.config.log_messages.player_joined,
                 callback=lambda player: self.send_discord_message(
                     f":inbox_tray: **{player}** has joined"
                 ),
@@ -87,6 +106,7 @@ class SlimeHook:
             LogLineType(
                 "player_left",
                 r"^(.*) has left.$",
+                is_enabled=self.config.log_messages.player_left,
                 callback=lambda player: self.send_discord_message(
                     f":outbox_tray: **{player}** has left"
                 ),
@@ -95,13 +115,17 @@ class SlimeHook:
             LogLineType(
                 "chat_message",
                 r"^<(.*)> (.*)$",
+                is_enabled=self.config.log_messages.chat_message,
                 callback=lambda player, message: self.send_discord_message(
                     f"<**{player}**> {message}"
                 ),
                 capture_groups=2,
             ),
             LogLineType(
-                "world_save_progress", r"^Saving world data: (\d+)%", capture_groups=1
+                "world_save_progress",
+                r"^Saving world data: (\d+)%",
+                is_enabled=self.config.log_messages.world_backup,
+                capture_groups=1,
             ),
             LogLineType(
                 "world_validation_progress",
@@ -111,11 +135,16 @@ class SlimeHook:
             LogLineType(
                 "world_backup",
                 r"^Backing up world file",
+                is_enabled=self.config.log_messages.world_backup,
                 callback=lambda: self.send_discord_message(
                     "_Backup successfully created_"
                 ),
             ),
-            LogLineType("terraria_error", r"^Error on message Terraria\.MessageBuffer"),
+            LogLineType(
+                "terraria_error",
+                r"^Error on message Terraria\.MessageBuffer",
+                is_enabled=self.config.log_messages.terraria_error,
+            ),
             LogLineType(
                 "world_load_objects_progress",
                 r"^Resetting game objects (\d+)%",
@@ -134,6 +163,7 @@ class SlimeHook:
             LogLineType(
                 "server_listening",
                 r"^Listening on port \d+",
+                is_enabled=self.config.log_messages.server_listening,
                 callback=lambda: self.send_discord_message(
                     ":zap: **Server has started!**"
                 ),
@@ -151,6 +181,7 @@ class SlimeHook:
     def handle_line(self, line: str):
         line = line.strip()
         for line_type in self.LINE_TYPES:
+            # TODO: Check config
             did_process_line = line_type.process_line(line)
             if did_process_line:
                 return line_type
