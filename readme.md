@@ -6,6 +6,8 @@ A Python tool for publishing Terraria server chat messages to a Discord channel.
 
 Named after the [Slime Hook](https://terraria.wiki.gg/wiki/Slime_hook) from Terraria (because it uses web*hooks* to send Discord messages). <!-- Haha I am indeed a comedic genius -->
 
+![A screenshot of Discord messages showing a player joining, talking about Slime Hook in chat, leaving, and the server stopping](Screenshot_20241106_195548.png)
+
 ## Documentation
 
 ### Expected environment
