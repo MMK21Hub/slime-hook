@@ -91,13 +91,21 @@ class SlimeHook:
         self.LINE_TYPES = [
             LogLineType(
                 "connection_attempt",
-                r"^[\d\.]{7,15}:\d{1,5} is connecting\.\.\.",
+                r"^([\d\.]{7,15}):\d{1,5} is connecting\.\.\.",
                 is_enabled=self.config.log_messages.connection_attempt,
+                callback=lambda ip: self.send_discord_message(
+                    f"Connection attempt from **{ip}**"
+                ),
+                capture_groups=1,
             ),
             LogLineType(
                 "connection_booted",
-                r"^[\d\.]{7,15}:\d{1,5} was booted: Invalid operation at this state\.",
+                r"^([\d\.]{7,15}):\d{1,5} was booted: Invalid operation at this state\.",
                 is_enabled=self.config.log_messages.connection_booted,
+                callback=lambda ip: self.send_discord_message(
+                    f"Connection from **{ip}** was booted"
+                ),
+                capture_groups=1,
             ),
             LogLineType(
                 "player_joined",
@@ -149,6 +157,9 @@ class SlimeHook:
                 "terraria_error",
                 r"^Error on message Terraria\.MessageBuffer",
                 is_enabled=self.config.log_messages.terraria_error,
+                callback=lambda: self.send_discord_message(
+                    "_Terraria.MessageBuffer error from the server_"
+                ),
             ),
             LogLineType(
                 "world_load_objects_progress",
