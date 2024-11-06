@@ -1,6 +1,7 @@
 # <img src="slime_hook.png" alt="SLime Hook Terraria item" style="width:1ch"> Slime Hook
 
 [![Built during Arcade 2024](https://badges.api.lorebooks.wiki/badges/hackclub/arcade)](https://hackclub.com/arcade)
+![Hakatime time tracking](https://waka.hackclub.com/api/badge/U073M5L9U13/interval:any/project:slime-hook?label=Hakatime)
 
 A Python tool for publishing Terraria server chat messages to a Discord channel.
 
