@@ -75,7 +75,7 @@ class LogLineType:
                 self.callback(*groups)
             else:
                 print(
-                    f"Warning: Sending {self.name} log messages is enabled, but there is no callback"
+                    f"Warning: Tried to send a {self.name} log message, but it has not been implemented"
                 )
         return True
 
