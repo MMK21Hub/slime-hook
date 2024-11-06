@@ -94,7 +94,7 @@ class SlimeHook:
                 r"^([\d\.]{7,15}):\d{1,5} is connecting\.\.\.",
                 is_enabled=self.config.log_messages.connection_attempt,
                 callback=lambda ip: self.send_discord_message(
-                    f"Connection attempt from **{ip}**"
+                    f"Connection attempt from {ip}"
                 ),
                 capture_groups=1,
             ),
@@ -103,7 +103,7 @@ class SlimeHook:
                 r"^([\d\.]{7,15}):\d{1,5} was booted: Invalid operation at this state\.",
                 is_enabled=self.config.log_messages.connection_booted,
                 callback=lambda ip: self.send_discord_message(
-                    f"Connection from **{ip}** was booted"
+                    f"Connection from {ip} was booted"
                 ),
                 capture_groups=1,
             ),
