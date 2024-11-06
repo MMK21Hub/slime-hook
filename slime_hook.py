@@ -181,7 +181,6 @@ class SlimeHook:
     def handle_line(self, line: str):
         line = line.strip()
         for line_type in self.LINE_TYPES:
-            # TODO: Check config
             did_process_line = line_type.process_line(line)
             if did_process_line:
                 return line_type
