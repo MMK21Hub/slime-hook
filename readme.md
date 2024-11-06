@@ -118,7 +118,7 @@ The steps are something like this. We can probably make this a Bash script or ev
 So that multiple architectures can be built, you must set Docker to use the containerd image store, as explained [in the Docker documentation](https://docs.docker.com/storage/containerd/). You also need to [install the `arm64` emulator for Docker](https://github.com/tonistiigi/binfmt?tab=readme-ov-file#installing-emulators) to build the ARM64 image in an x86 computer (or vice versa if you're using an ARM computer), so run `docker run --privileged --rm tonistiigi/binfmt --install arm64`.
 
 ```bash
-VERSION=v1.0.0 # Replace with the new version number
+export VERSION=v1.x.y # Replace with the new version number
 
 git tag $VERSION
 git push origin $VERSION
