@@ -70,8 +70,8 @@ This shows optional fields with some suggested values.
 ```yaml
 # Customise which kinds of log messages should be sent to Discord
 log_messages:
-  connection_attempt: False
-  connection_booted: False
+  connection_attempt: False # Warning: This will reveal users' IP addresses
+  connection_booted: False # Warning: This will reveal users' IP addresses
   player_joined: True
   player_left: True
   chat_message: True
