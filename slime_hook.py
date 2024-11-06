@@ -237,7 +237,8 @@ class SlimeHook:
                 line_buffer = lines[-1]
 
         # If we get here then it usually means the container has stopped
-        self.send_discord_message(":skull: **Server has stopped**")
+        if self.config.log_messages.server_stopped:
+            self.send_discord_message(":skull: **Server has stopped**")
         raise ContainerNotRunning(f'Container "{container.name}" is not running')
 
     def run_with_auto_retry(self):
