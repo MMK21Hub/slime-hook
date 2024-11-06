@@ -119,6 +119,7 @@ So that multiple architectures can be built, you must set Docker to use the cont
 
 ```bash
 export VERSION=v1.x.y # Replace with the new version number
+git checkout main
 
 git tag $VERSION
 git push origin $VERSION
