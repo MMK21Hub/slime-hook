@@ -51,7 +51,7 @@ class LogLineType:
         callback: Optional[Callable[..., None]] = None,
         capture_groups: int = 0,
     ):
-        name = name
+        self.name = name
         self.regex = regex
         self.callback = callback
         self.capture_groups = capture_groups
@@ -70,8 +70,13 @@ class LogLineType:
                 f"Expected {self.capture_groups} capture groups, but got {len(groups)}"
             )
 
-        if self.is_enabled and self.callback:
-            self.callback(*groups)
+        if self.is_enabled:
+            if self.callback:
+                self.callback(*groups)
+            else:
+                print(
+                    f"Warning: Sending {self.name} log messages is enabled, but there is no callback"
+                )
         return True
 
 
