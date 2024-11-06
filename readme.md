@@ -97,7 +97,7 @@ docker_connection:
   base_url: unix://var/run/docker.sock # Or a URL like tcp://127.0.0.1:2375
 ```
 
-## Non-Docker deployment guide
+### Non-Docker deployment guide
 
 1. Clone this repository onto the server running the Terraria server
 2. Create a virtual environment for the project and install the dependencies from `requirements.txt`
