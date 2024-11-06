@@ -28,8 +28,8 @@ class EnabledLogMessages(BaseModel):
     player_joined: bool = True
     player_left: bool = True
     chat_message: bool = True
-    world_backup: bool = True
-    terraria_error: bool = True
+    world_backup: bool = False
+    terraria_error: bool = False
     server_listening: bool = True
     server_stopped: bool = True
 
