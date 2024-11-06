@@ -68,6 +68,17 @@ discord_webhook_url: https://discord.com/api/webhooks/1234567890/abcdefghijklmno
 This shows optional fields with some suggested values.
 
 ```yaml
+# Customise which kinds of log messages should be sent to Discord
+log_messages:
+  connection_attempt: False # Warning: This will reveal users' IP addresses
+  connection_booted: False # Warning: This will reveal users' IP addresses
+  player_joined: True
+  player_left: True
+  chat_message: True
+  world_backup: False
+  terraria_error: False
+  server_listening: True
+  server_stopped: True
 # When provided, Slime Hook will be restarted if certain errors occur, such as the container being stopped or removed
 # This is useful when the script is automatically running in the background
 # The auto-retry feature will only be enabled for error types specified under `auto_retry`
